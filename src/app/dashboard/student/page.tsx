@@ -40,6 +40,10 @@ export default function StudentDashboard() {
     const liveSessions = sessions.filter(s => {
         const start = new Date(s.startTime);
         const end = new Date(start.getTime() + s.duration * 60000);
+
+        // If manually ended, exclude from Live
+        if (s.status === "ENDED") return false;
+
         // FORCE "Ended" if time is up, even if status says LIVE
         if (now >= end) return false;
 
