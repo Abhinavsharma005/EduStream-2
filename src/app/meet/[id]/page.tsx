@@ -7,7 +7,7 @@ import { io, Socket } from "socket.io-client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { Mic, MicOff, Video, VideoOff, MonitorUp, LogOut, Loader2 } from "lucide-react";
+import { Mic, MicOff, Video, VideoOff, MonitorUp, LogOut, Loader2, Users } from "lucide-react";
 
 import {
     LiveKitRoom,
@@ -35,6 +35,7 @@ export default function MeetPage() {
     const [socket, setSocket] = useState<Socket | null>(null);
     const [messages, setMessages] = useState<Message[]>([]);
     const [inputMsg, setInputMsg] = useState("");
+    const [participantCount, setParticipantCount] = useState(0);
 
     // LiveKit State
     const [token, setToken] = useState("");
@@ -92,6 +93,10 @@ export default function MeetPage() {
                 time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
                 isSelf: data.senderId === userId
             }]);
+        });
+
+        newSocket.on("update-participant-count", (count: number) => {
+            setParticipantCount(count);
         });
     };
 
@@ -161,7 +166,13 @@ export default function MeetPage() {
             {/* Chat Sidebar */}
             <div className="w-80 bg-gray-950 border-l border-gray-800 flex flex-col z-50">
                 <div className="p-4 border-b border-gray-800 flex justify-between items-center bg-gray-900/50">
-                    <h3 className="font-semibold text-sm tracking-wide">Live Chat</h3>
+                    <div className="flex items-center gap-2">
+                        <h3 className="font-semibold text-sm tracking-wide">Live Chat</h3>
+                        <div className="flex items-center gap-1.5 ml-3 bg-gray-800 px-2 py-0.5 rounded-full text-xs text-gray-400 border border-gray-700">
+                            <Users className="h-3 w-3" />
+                            <span>{participantCount}</span>
+                        </div>
+                    </div>
                     <Badge variant="secondary" className="bg-red-600/90 text-white hover:bg-red-600 px-2 py-0.5 text-[10px] uppercase tracking-wider font-bold animate-pulse">Live</Badge>
                 </div>
 
