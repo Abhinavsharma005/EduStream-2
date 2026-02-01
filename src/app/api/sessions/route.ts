@@ -80,15 +80,8 @@ export async function GET(req: Request) {
         if (role === "teacher") {
             sessions = await Session.find({ hostId: userId }).sort({ startTime: -1 });
         } else {
-            // Logic for Student: 
-            // "Live Session", "Upcoming Session", "Recent session"
-            // We might need to split this or return all and let frontend filter, 
-            // OR allow query params.
-            // For now, let's return all sessions so student can see them.
-            // But user said "Student Dashboard... below that session reveal field they have mainly three sections"
-            // It implies listing ALL available sessions? "Live Session", "Upcoming Session".
-            // Let's return all sessions for students.
-            sessions = await Session.find().populate("hostId", "name").sort({ startTime: -1 });
+            // Only show sessions where the student is a participant
+            sessions = await Session.find({ participants: userId }).populate("hostId", "name").sort({ startTime: -1 });
         }
 
         return NextResponse.json({ sessions }, { status: 200 });

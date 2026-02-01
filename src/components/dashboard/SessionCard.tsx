@@ -31,12 +31,18 @@ export function SessionCard({ session, isTeacher }: { session: any, isTeacher: b
     const end = new Date(start.getTime() + session.duration * 60000);
 
     let computedStatus = "SCHEDULED";
-    if (now >= start && now < end) computedStatus = "LIVE";
-    else if (now >= end) computedStatus = "ENDED";
-    else computedStatus = "SCHEDULED";
+    // Priority: If time is passed, it is ENDED for students view regardless of DB status (unless manually kept live? No, user strict about duration)
+    // Actually, for teacher, they might extend it. But user request specifically asked for auto transition.
 
-    // Override status if teacher manually ended it? 
-    // If session.status is ENDED, kept it ended.
+    if (now >= end) {
+        computedStatus = "ENDED";
+    } else if (now >= start) {
+        computedStatus = "LIVE";
+    } else {
+        computedStatus = "SCHEDULED";
+    }
+
+    // Fallback/Override if DB says explicitly defined
     if (session.status === "ENDED") computedStatus = "ENDED";
 
     return (
@@ -47,7 +53,7 @@ export function SessionCard({ session, isTeacher }: { session: any, isTeacher: b
             <CardHeader className="pb-2">
                 <div className="flex justify-between items-start">
                     <div className="flex items-center gap-2">
-                        {/* Logic for Instructor Avatar could go here */}
+                        {/* Avatar */}
                         <div>
                             <p className="text-xs font-medium text-gray-500 uppercase tracking-wider">Instructor</p>
                             <p className="text-sm font-semibold">{session.hostId?.name || "You"}</p>
@@ -86,8 +92,13 @@ export function SessionCard({ session, isTeacher }: { session: any, isTeacher: b
                         )}
                     </div>
                 ) : (
-                    <Button className="w-full" disabled={computedStatus === "SCHEDULED" && false} onClick={() => window.open(`/meet/${session._id}`, '_blank')}>
-                        {computedStatus === "LIVE" ? "Join Now" : computedStatus === "ENDED" ? "Watch Recording" : "Join (Scheduled)"}
+                    <Button
+                        className="w-full"
+                        disabled={computedStatus === "ENDED" || computedStatus === "SCHEDULED"}
+                        variant={computedStatus === "ENDED" ? "secondary" : "default"}
+                        onClick={() => computedStatus === "LIVE" && window.open(`/meet/${session._id}`, '_blank')}
+                    >
+                        {computedStatus === "LIVE" ? "Join Now" : computedStatus === "ENDED" ? "End Session" : "Join (Scheduled)"}
                     </Button>
                 )}
             </CardFooter>

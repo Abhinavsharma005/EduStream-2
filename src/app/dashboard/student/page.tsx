@@ -19,66 +19,84 @@ interface Session {
 export default function StudentDashboard() {
     const [sessions, setSessions] = useState<Session[]>([]);
     const [link, setLink] = useState("");
+    const [userName, setUserName] = useState("Student");
 
     useEffect(() => {
+        // Fetch User
+        fetch("/api/auth/me")
+            .then(res => res.json())
+            .then(data => {
+                if (data.user) setUserName(data.user.name);
+            });
+
+        // Fetch Sessions
         fetch("/api/sessions?filter=all")
             .then(res => res.json())
-            .then(data => setSessions(data.sessions));
+            .then(data => setSessions(data.sessions || []));
     }, []);
 
+    const now = new Date();
+
     const liveSessions = sessions.filter(s => {
-        const now = new Date();
         const start = new Date(s.startTime);
         const end = new Date(start.getTime() + s.duration * 60000);
-        return (now >= start && now < end) || s.status === "LIVE";
+        // FORCE "Ended" if time is up, even if status says LIVE
+        if (now >= end) return false;
+
+        return (now >= start) || s.status === "LIVE";
     });
 
     const upcomingSessions = sessions.filter(s => {
-        const now = new Date();
         const start = new Date(s.startTime);
-        return now < start && s.status !== "ENDED";
+        // Only future starts
+        return now < start && s.status !== "LIVE" && s.status !== "ENDED";
     });
 
     const recentSessions = sessions.filter(s => {
-        const now = new Date();
         const start = new Date(s.startTime);
         const end = new Date(start.getTime() + s.duration * 60000);
+
         return (now >= end || s.status === "ENDED");
     });
 
-    const revealSession = () => {
-        // Logic to parse link ID and find/show specific session card below input
-        // User requirement: "reveal button on click shows below its corresponding session card"
-        // I can just filter 'sessions' to find the one matching the ID
+    const revealSession = async () => {
         if (!link) return;
         try {
-            const id = link.split("/meet/")[1];
+            // Support full URL or just ID
+            const id = link.includes("/meet/") ? link.split("/meet/")[1] : link;
             if (id) {
-                // Scroll to or highlight?
-                // Or show a specific "Revealed Session" section?
-                alert(`Navigating to session: ${id}`);
-                window.open(link, "_blank");
+                // 1. Call Join API to persist in DB
+                await fetch(`/api/sessions/${id}/join`, { method: "POST" });
+
+                // 2. Refresh list so it appears in their dashboard
+                const res = await fetch("/api/sessions?filter=all");
+                const data = await res.json();
+                if (data.sessions) setSessions(data.sessions);
+
+                // 3. Open in new tab
+                window.open(`/meet/${id}`, "_blank");
             }
-        } catch (e) { }
+        } catch (e) {
+            console.error("Failed to join", e);
+        }
     };
 
     return (
         <div className="space-y-8">
             <div>
-                <h2 className="text-2xl font-bold text-gray-900">Welcome, Student</h2>
+                <h2 className="text-2xl font-bold text-gray-900">Welcome, {userName}</h2>
             </div>
 
             <div className="bg-white p-6 rounded-lg shadow-sm border">
                 <div className="flex gap-4">
                     <Input
-                        placeholder="Enter your session link"
+                        placeholder="Enter your session link or ID"
                         value={link}
                         onChange={(e) => setLink(e.target.value)}
                         className="flex-1"
                     />
-                    <Button onClick={revealSession} className="bg-blue-600 hover:bg-blue-700">Reveal</Button>
+                    <Button onClick={revealSession} className="bg-blue-600 hover:bg-blue-700">Reveal & Join</Button>
                 </div>
-                {/* Revealed session card could go here */}
             </div>
 
             {[{ title: "Live Session", data: liveSessions, dotColor: "bg-green-400" },
