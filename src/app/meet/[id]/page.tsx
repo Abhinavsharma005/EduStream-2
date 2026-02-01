@@ -7,7 +7,10 @@ import { io, Socket } from "socket.io-client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { Mic, MicOff, Video, VideoOff, MonitorUp, LogOut, Loader2, Users } from "lucide-react";
+import { Mic, MicOff, Video, VideoOff, MonitorUp, LogOut, Loader2, Users, MessageSquare, BarChart2, HelpCircle } from "lucide-react";
+import { PollView } from "@/components/meet/PollView";
+import { QuizView } from "@/components/meet/QuizView";
+import { cn } from "@/lib/utils";
 
 import {
     LiveKitRoom,
@@ -28,10 +31,44 @@ interface Message {
 }
 
 export default function MeetPage() {
-    const { id: roomId } = useParams();
+    const { id: rawRoomId } = useParams();
+    const roomId = Array.isArray(rawRoomId) ? rawRoomId[0] : rawRoomId;
     const router = useRouter();
 
     // Chat State
+
+    // ... State ... (Partial replacement would be tricky, replacing component body or large chunk)
+    // I will replace the component logic carefully.
+
+    // ... inside MeetPage ...
+    const [activeTab, setActiveTab] = useState<"chat" | "poll" | "quiz">("chat");
+    const [polls, setPolls] = useState<any[]>([]); // Define Type properly ideally
+    const [quizzes, setQuizzes] = useState<any[]>([]);
+
+    // Unread counts (red dots)
+    const [unread, setUnread] = useState({ chat: 0, poll: 0, quiz: 0 });
+
+    // ... inside connectSocket ... 
+    // Need to insert listeners.
+
+    // ... inside render ... 
+    // Sidebar structure replacement.
+
+    // Let's do it in chunks.
+
+    // Chunk 1: State injection
+    // Chunk 2: Listener injection
+    // Chunk 3: Render replacement
+
+    // I will return to task loop to do this via multi_replace or sequential, 
+    // but the Prompt here is strictly asking for ReplaceFileContent.
+    // I will assume I can do large replace.
+
+    // Actually, I can use `multi_replace_file_content` again which is safer.
+    // I will cancel this call and use `multi_replace_file_content` in next step.
+
+    // WAIT, I must return SOMETHING or error. 
+    // I will just return the State Injection here to start.
     const [socket, setSocket] = useState<Socket | null>(null);
     const [messages, setMessages] = useState<Message[]>([]);
     const [inputMsg, setInputMsg] = useState("");
@@ -86,6 +123,35 @@ export default function MeetPage() {
         setSocket(newSocket);
         newSocket.emit("join-room", rId, userId);
 
+        newSocket.on("update-participant-count", (count: number) => {
+            setParticipantCount(count);
+        });
+
+        // --- Poll & Quiz Listeners ---
+        newSocket.on("sync-room-state", (data: { polls: any[], quizzes: any[] }) => {
+            setPolls(data.polls || []);
+            setQuizzes(data.quizzes || []);
+        });
+
+        newSocket.on("new-poll", (poll: any) => {
+            setPolls(prev => [...prev, poll]);
+            if (activeTab !== "poll") setUnread(prev => ({ ...prev, poll: prev.poll + 1 }));
+        });
+
+        newSocket.on("update-poll-results", (data: { poll: any }) => {
+            setPolls(prev => prev.map(p => p.id === data.poll.id ? data.poll : p));
+        });
+
+        newSocket.on("new-quiz", (quiz: any) => {
+            setQuizzes(prev => [...prev, quiz]);
+            if (activeTab !== "quiz") setUnread(prev => ({ ...prev, quiz: prev.quiz + 1 }));
+        });
+
+        newSocket.on("update-quiz-results", (data: { quizId: string, answers: any }) => {
+            setQuizzes(prev => prev.map(q => q.id === data.quizId ? { ...q, answers: data.answers } : q));
+            // Optional: if teacher, maybe show dot? 
+        });
+
         newSocket.on("new-message", (data: any) => {
             setMessages((prev) => [...prev, {
                 sender: data.sender || "Unknown",
@@ -93,10 +159,7 @@ export default function MeetPage() {
                 time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
                 isSelf: data.senderId === userId
             }]);
-        });
-
-        newSocket.on("update-participant-count", (count: number) => {
-            setParticipantCount(count);
+            if (activeTab !== "chat") setUnread(prev => ({ ...prev, chat: prev.chat + 1 }));
         });
     };
 
@@ -163,47 +226,97 @@ export default function MeetPage() {
                 </div>
             </LiveKitRoom>
 
-            {/* Chat Sidebar */}
-            <div className="w-80 bg-gray-950 border-l border-gray-800 flex flex-col z-50">
-                <div className="p-4 border-b border-gray-800 flex justify-between items-center bg-gray-900/50">
-                    <div className="flex items-center gap-2">
-                        <h3 className="font-semibold text-sm tracking-wide">Live Chat</h3>
-                        <div className="flex items-center gap-1.5 ml-3 bg-gray-800 px-2 py-0.5 rounded-full text-xs text-gray-400 border border-gray-700">
-                            <Users className="h-3 w-3" />
-                            <span>{participantCount}</span>
+            {/* Sidebar Tabs */}
+            <div className="w-80 bg-gray-950 border-l border-gray-800 flex flex-col z-50 transition-all duration-300">
+                {/* Tab Headers */}
+                <div className="flex border-b border-gray-800 bg-gray-900/50">
+                    <button
+                        onClick={() => { setActiveTab("chat"); setUnread(p => ({ ...p, chat: 0 })); }}
+                        className={`flex-1 p-3 flex justify-center items-center relative transition-colors ${activeTab === "chat" ? 'text-blue-400 border-b-2 border-blue-500 bg-blue-500/5' : 'text-gray-400 hover:text-gray-200 hover:bg-gray-800/50'}`}
+                    >
+                        <MessageSquare className="h-5 w-5" />
+                        {unread.chat > 0 && <span className="absolute top-2 right-6 h-2 w-2 rounded-full bg-red-500 animate-pulse ring-2 ring-gray-900" />}
+                    </button>
+                    <button
+                        onClick={() => { setActiveTab("quiz"); setUnread(p => ({ ...p, quiz: 0 })); }}
+                        className={`flex-1 p-3 flex justify-center items-center relative transition-colors ${activeTab === "quiz" ? 'text-purple-400 border-b-2 border-purple-500 bg-purple-500/5' : 'text-gray-400 hover:text-gray-200 hover:bg-gray-800/50'}`}
+                    >
+                        <HelpCircle className="h-5 w-5" />
+                        {unread.quiz > 0 && <span className="absolute top-2 right-6 h-2 w-2 rounded-full bg-red-500 animate-pulse ring-2 ring-gray-900" />}
+                    </button>
+                    <button
+                        onClick={() => { setActiveTab("poll"); setUnread(p => ({ ...p, poll: 0 })); }}
+                        className={`flex-1 p-3 flex justify-center items-center relative transition-colors ${activeTab === "poll" ? 'text-green-400 border-b-2 border-green-500 bg-green-500/5' : 'text-gray-400 hover:text-gray-200 hover:bg-gray-800/50'}`}
+                    >
+                        <BarChart2 className="h-5 w-5" />
+                        {unread.poll > 0 && <span className="absolute top-2 right-6 h-2 w-2 rounded-full bg-red-500 animate-pulse ring-2 ring-gray-900" />}
+                    </button>
+                </div>
+
+                {/* Tab Content */}
+                <div className="flex-1 overflow-hidden relative">
+                    {/* Chat View */}
+                    <div className={cn("absolute inset-0 flex flex-col transition-transform duration-300", activeTab === "chat" ? "translate-x-0" : activeTab === "quiz" ? "-translate-x-full" : "-translate-x-full")}>
+                        <div className="p-3 border-b border-gray-800 flex justify-between items-center bg-gray-900/30">
+                            <div className="flex items-center gap-2">
+                                <h3 className="font-semibold text-xs tracking-wide uppercase text-gray-400">Live Chat</h3>
+                                <div className="flex items-center gap-1.5 ml-2 bg-gray-800 px-2 py-0.5 rounded-full text-[10px] text-gray-400 border border-gray-700">
+                                    <Users className="h-3 w-3" />
+                                    <span>{participantCount}</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className="flex-1 overflow-y-auto p-4 space-y-4">
+                            {messages.length === 0 && <div className="flex flex-col items-center justify-center h-full text-gray-600 text-sm gap-2 opacity-50">
+                                <MessageSquare className="h-8 w-8" />
+                                <p>No messages yet</p>
+                            </div>}
+                            {messages.map((msg, idx) => (
+                                <div key={idx} className={`flex flex-col ${msg.isSelf ? 'items-end' : 'items-start'} animate-in slide-in-from-bottom-2 duration-300`}>
+                                    <div className={`max-w-[85%] rounded-2xl px-4 py-2 text-sm shadow-sm ${msg.isSelf ? 'bg-blue-600 text-white rounded-br-none' : 'bg-gray-800 text-gray-200 rounded-bl-none'}`}>
+                                        {!msg.isSelf && <p className="text-[10px] font-bold mb-1 opacity-70 uppercase tracking-wider text-blue-300">{msg.sender}</p>}
+                                        <p className="leading-snug">{msg.text}</p>
+                                    </div>
+                                    <span className="text-[10px] text-gray-500 mt-1 px-1">{msg.time}</span>
+                                </div>
+                            ))}
+                        </div>
+
+                        <div className="p-3 border-t border-gray-800 bg-gray-900/50">
+                            <div className="flex gap-2 relative">
+                                <Input
+                                    value={inputMsg}
+                                    onChange={e => setInputMsg(e.target.value)}
+                                    onKeyDown={e => e.key === 'Enter' && sendMessage()}
+                                    placeholder="Type a message..."
+                                    className="bg-gray-800 border-gray-700 text-white focus:ring-blue-500 rounded-full pl-4 pr-10 h-10 text-sm"
+                                />
+                                <Button onClick={sendMessage} size="icon" className="absolute right-1 top-1 h-8 w-8 rounded-full bg-blue-600 hover:bg-blue-500 transition-all">
+                                    <svg width="15" height="15" viewBox="0 0 15 15" fill="none" className="ml-0.5"><path d="M1.20308 1.04312C1.00481 0.954998 0.772341 1.0048 0.627577 1.16641C0.482813 1.32802 0.458794 1.56455 0.568117 1.7517L3.06812 6.0317C3.1575 6.18469 3.32057 6.27972 3.5 6.27972H7.5C7.77614 6.27972 8 6.50358 8 6.77972C8 7.05586 7.77614 7.27972 7.5 7.27972H3.5C3.32057 7.27972 3.1575 7.37475 3.06812 7.52775L0.568117 11.8077C0.458794 11.9949 0.482813 12.2314 0.627577 12.393C0.772341 12.5546 1.00481 12.6044 1.20308 12.5163L14.2031 6.73632C14.408 6.64523 14.5424 6.44465 14.5424 6.21972C14.5424 5.99479 14.408 5.79421 14.2031 5.70312L1.20308 1.04312Z" fill="currentColor" fillRule="evenodd" clipRule="evenodd"></path></svg>
+                                </Button>
+                            </div>
                         </div>
                     </div>
-                    <Badge variant="secondary" className="bg-red-600/90 text-white hover:bg-red-600 px-2 py-0.5 text-[10px] uppercase tracking-wider font-bold animate-pulse">Live</Badge>
-                </div>
 
-                <div className="flex-1 overflow-y-auto p-4 space-y-4">
-                    {messages.length === 0 && <div className="flex flex-col items-center justify-center h-full text-gray-600 text-sm gap-2">
-                        <span className="text-2xl">💬</span>
-                        <p>No messages yet</p>
-                    </div>}
-                    {messages.map((msg, idx) => (
-                        <div key={idx} className={`flex flex-col ${msg.isSelf ? 'items-end' : 'items-start'} animate-in slide-in-from-bottom-2 duration-300`}>
-                            <div className={`max-w-[85%] rounded-2xl px-4 py-2 text-sm shadow-sm ${msg.isSelf ? 'bg-blue-600 text-white rounded-br-none' : 'bg-gray-800 text-gray-200 rounded-bl-none'}`}>
-                                {!msg.isSelf && <p className="text-[10px] font-bold mb-1 opacity-70 uppercase tracking-wider text-blue-300">{msg.sender}</p>}
-                                <p className="leading-snug">{msg.text}</p>
-                            </div>
-                            <span className="text-[10px] text-gray-500 mt-1 px-1">{msg.time}</span>
-                        </div>
-                    ))}
-                </div>
-
-                <div className="p-4 border-t border-gray-800 bg-gray-900/50">
-                    <div className="flex gap-2 relative">
-                        <Input
-                            value={inputMsg}
-                            onChange={e => setInputMsg(e.target.value)}
-                            onKeyDown={e => e.key === 'Enter' && sendMessage()}
-                            placeholder="Say something..."
-                            className="bg-gray-800 border-gray-700 text-white focus:ring-blue-500 rounded-full pl-4 pr-12 focus-visible:ring-offset-0 focus-visible:ring-1 transition-all"
+                    {/* Quiz View */}
+                    <div className={cn("absolute inset-0 transition-transform duration-300 bg-gray-950", activeTab === "quiz" ? "translate-x-0" : activeTab === "chat" ? "translate-x-full" : "-translate-x-full")}>
+                        <QuizView
+                            quizzes={quizzes}
+                            isTeacher={isTeacher}
+                            onCreateQuiz={(q, o, c) => socket?.emit("create-quiz", { roomId, question: q, options: o, correctIndex: c })}
+                            onAnswer={(qid, oid) => socket?.emit("answer-quiz", { roomId, quizId: qid, optionIndex: oid, studentName: user?.name })}
                         />
-                        <Button onClick={sendMessage} size="icon" className="absolute right-1 top-1 h-8 w-8 rounded-full bg-blue-600 hover:bg-blue-500 transition-all">
-                            <svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg" className="ml-0.5"><path d="M1.20308 1.04312C1.00481 0.954998 0.772341 1.0048 0.627577 1.16641C0.482813 1.32802 0.458794 1.56455 0.568117 1.7517L3.06812 6.0317C3.1575 6.18469 3.32057 6.27972 3.5 6.27972H7.5C7.77614 6.27972 8 6.50358 8 6.77972C8 7.05586 7.77614 7.27972 7.5 7.27972H3.5C3.32057 7.27972 3.1575 7.37475 3.06812 7.52775L0.568117 11.8077C0.458794 11.9949 0.482813 12.2314 0.627577 12.393C0.772341 12.5546 1.00481 12.6044 1.20308 12.5163L14.2031 6.73632C14.408 6.64523 14.5424 6.44465 14.5424 6.21972C14.5424 5.99479 14.408 5.79421 14.2031 5.70312L1.20308 1.04312Z" fill="currentColor" fillRule="evenodd" clipRule="evenodd"></path></svg>
-                        </Button>
+                    </div>
+
+                    {/* Poll View */}
+                    <div className={cn("absolute inset-0 transition-transform duration-300 bg-gray-950", activeTab === "poll" ? "translate-x-0" : "translate-x-full")}>
+                        <PollView
+                            polls={polls}
+                            isTeacher={isTeacher}
+                            onCreatePoll={(q, o) => socket?.emit("create-poll", { roomId, question: q, options: o })}
+                            onVote={(pid, oid) => socket?.emit("vote-poll", { roomId, pollId: pid, optionIndex: oid })}
+                        />
                     </div>
                 </div>
             </div>
