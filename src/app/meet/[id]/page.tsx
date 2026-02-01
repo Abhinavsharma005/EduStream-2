@@ -106,6 +106,21 @@ export default function MeetPage() {
         setInputMsg("");
     };
 
+    const endSession = async () => {
+        if (confirm("Are you sure you want to end this session for everyone? Passcode: END")) {
+            // Verify intent (simple confirm is OK for now)
+            try {
+                await fetch(`/api/sessions/${roomId}/end`, { method: "POST" });
+                // Disconnect socket/livekit if needed, but router push is usually enough
+                if (socket) socket.disconnect();
+                router.push("/dashboard/teacher");
+            } catch (e) {
+                console.error("Failed to end session", e);
+                alert("Failed to end session");
+            }
+        }
+    };
+
     const leaveSession = () => {
         if (user?.role === "teacher") router.push("/dashboard/teacher");
         else router.push("/dashboard/student");
@@ -139,7 +154,7 @@ export default function MeetPage() {
                     </div>
 
                     {/* Custom Controls */}
-                    <CustomControlBar isTeacher={isTeacher} onLeave={leaveSession} />
+                    <CustomControlBar isTeacher={isTeacher} onLeave={leaveSession} onEndSession={endSession} />
                 </div>
             </LiveKitRoom>
 
@@ -242,7 +257,7 @@ function ConnectionStatusIndicator() {
     }
 }
 
-function CustomControlBar({ isTeacher, onLeave }: { isTeacher: boolean, onLeave: () => void }) {
+function CustomControlBar({ isTeacher, onLeave, onEndSession }: { isTeacher: boolean, onLeave: () => void, onEndSession?: () => void }) {
     const { localParticipant } = useLocalParticipant();
 
     // We maintain local state for UI responsiveness, but ultimately control via localParticipant
@@ -324,7 +339,14 @@ function CustomControlBar({ isTeacher, onLeave }: { isTeacher: boolean, onLeave:
                         <MonitorUp className="h-6 w-6" />
                     </Button>
                     <div className="w-px h-8 bg-gray-800 mx-2" />
-                    <Button variant="destructive" className="px-8 rounded-full h-12 font-medium bg-red-600 hover:bg-red-700 shadow-lg shadow-red-900/20" onClick={onLeave}>
+
+                    {/* LEAVE BUTTON */}
+                    <Button variant="ghost" className="px-6 rounded-full h-12 font-medium text-gray-300 hover:text-white hover:bg-gray-800" onClick={onLeave}>
+                        <LogOut className="mr-2 h-5 w-5" /> Leave
+                    </Button>
+
+                    {/* END SESSION BUTTON */}
+                    <Button variant="destructive" className="px-8 rounded-full h-12 font-medium bg-red-600 hover:bg-red-700 shadow-lg shadow-red-900/20" onClick={onEndSession}>
                         End Session
                     </Button>
                 </>
