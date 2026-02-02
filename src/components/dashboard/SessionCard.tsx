@@ -1,10 +1,12 @@
 
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { useTheme } from "next-themes";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Clock, ExternalLink, Calendar, Copy } from "lucide-react";
 import { UserAvatar } from "../UserAvatar";
 
+// Colors from prompt
 // Colors from prompt
 const CARD_COLORS = [
     "#e5f1ff", // Blueish
@@ -15,13 +17,29 @@ const CARD_COLORS = [
     "#fef9ce", // Yellowish
 ];
 
+const DARK_CARD_COLORS = [
+    "#1e293b", // Slate 800 (Backup) - wait, let's map roughly
+    "#187582ff", // Blue 950
+    "#052e16", // Green 950
+    "#431407", // Orange 950
+    "#3b0764", // Purple 950
+    "#500724", // Pink 950
+    "#422006", // Yellow 950 (Brownish)
+];
+
 export function SessionCard({ session, isTeacher }: { session: any, isTeacher: boolean }) {
+    const { theme } = useTheme();
     const getRandomColor = (id: string) => {
         const index = id.split("").reduce((acc, char) => acc + char.charCodeAt(0), 0) % CARD_COLORS.length;
-        return CARD_COLORS[index];
+        return {
+            light: CARD_COLORS[index],
+            dark: DARK_CARD_COLORS[index] || "#1e293b"
+        };
     };
 
-    const bgColor = getRandomColor(session._id);
+    const colors = getRandomColor(session._id);
+    const bgColor = colors.light;
+    const darkColor = colors.dark;
     const status = session.status === "LIVE" ? "Live" : session.status === "SCHEDULED" ? "Scheduled" : "Ended";
 
     // Dynamic status check based on time if needed, but using stored status for now.
@@ -46,10 +64,12 @@ export function SessionCard({ session, isTeacher }: { session: any, isTeacher: b
     // Fallback/Override if DB says explicitly defined
     if (session.status === "ENDED") computedStatus = "ENDED";
 
+    const isDark = theme === "dark";
+
     return (
         <Card
-            className="border-0 shadow-sm hover:shadow-md transition-shadow"
-            style={{ backgroundColor: bgColor }}
+            className="border-0 shadow-sm hover:shadow-md transition-shadow dark:text-white"
+            style={{ backgroundColor: isDark ? darkColor : bgColor }}
         >
             <CardHeader className="pb-2">
                 <div className="flex justify-between items-start">
@@ -63,18 +83,18 @@ export function SessionCard({ session, isTeacher }: { session: any, isTeacher: b
                         )}
                         <div>
                             <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest leading-none">Instructor</p>
-                            <p className="text-sm font-bold text-gray-800 leading-tight">{session.hostId?.name || "You"}</p>
+                            <p className="text-sm font-bold text-gray-800 dark:text-gray-200 leading-tight">{session.hostId?.name || "You"}</p>
                         </div>
                     </div>
                     {computedStatus === "LIVE" && <Badge variant="destructive" className="animate-pulse">LIVE</Badge>}
                     {computedStatus === "SCHEDULED" && <Badge variant="secondary" className="bg-white/50 text-gray-700">Scheduled</Badge>}
-                    {computedStatus === "ENDED" && <Badge variant="outline" className="bg-gray-200/50 text-gray-500">Ended</Badge>}
+                    {computedStatus === "ENDED" && <Badge variant="outline" className="bg-gray-200/50 dark:bg-gray-800 text-gray-500 dark:text-gray-400">Ended</Badge>}
                 </div>
-                <CardTitle className="mt-2 text-xl font-bold text-gray-900/80">{session.topic}</CardTitle>
+                <CardTitle className="mt-2 text-xl font-bold text-gray-900/80 dark:text-white">{session.topic}</CardTitle>
             </CardHeader>
             <CardContent>
-                <p className="text-gray-700 mb-4 line-clamp-2">{session.description}</p>
-                <div className="space-y-1 text-sm text-gray-600">
+                <p className="text-gray-700 dark:text-gray-200 mb-4 line-clamp-2">{session.description}</p>
+                <div className="space-y-1 text-sm text-gray-600 dark:text-gray-300">
                     <div className="flex items-center gap-2">
                         <Calendar className="h-4 w-4" />
                         <span>{new Date(session.startTime).toLocaleDateString()}</span>
