@@ -1,24 +1,35 @@
-
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { connectDB } from "@/lib/db";
 import Session from "@/models/Session";
-import User from "@/models/User"; // Ensure User model is registered
+import User from "@/models/User";
 
-export async function GET(req: Request, { params }: { params: { id: string } }) {
-    try {
-        await connectDB();
-        
-        const { id } =  params;
+export async function GET(
+  req: NextRequest,
+  context: { params: Promise<{ id: string }> }
+) {
+  try {
+    await connectDB();
 
-        const session = await Session.findById(id).populate("hostId", "name profile");
+    // ✅ Next.js 16: params is a Promise
+    const { id } = await context.params;
 
-        if (!session) {
-            return NextResponse.json({ error: "Session not found" }, { status: 404 });
-        }
+    const session = await Session
+      .findById(id)
+      .populate("hostId", "name profile");
 
-        return NextResponse.json({ session }, { status: 200 });
-    } catch (error) {
-        console.error("Get session error:", error);
-        return NextResponse.json({ error: "Internal server error" }, { status: 500 });
+    if (!session) {
+      return NextResponse.json(
+        { error: "Session not found" },
+        { status: 404 }
+      );
     }
+
+    return NextResponse.json({ session }, { status: 200 });
+  } catch (error) {
+    console.error("Get session error:", error);
+    return NextResponse.json(
+      { error: "Internal server error" },
+      { status: 500 }
+    );
+  }
 }
