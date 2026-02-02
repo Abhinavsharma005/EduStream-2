@@ -7,11 +7,8 @@ import User from "@/models/User"; // Ensure User model is registered
 export async function GET(req: Request, { params }: { params: { id: string } }) {
     try {
         await connectDB();
-        // await params is required in Next.js 15+, but let's check version. 16.1.6
-        // In Next 15+, params is a promise?
-        // "Runtime error: params should be awaited"
-        // Safe to await it.
-        const { id } = await params;
+        
+        const { id } =  params;
 
         const session = await Session.findById(id).populate("hostId", "name profile");
 
