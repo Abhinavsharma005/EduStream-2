@@ -3,6 +3,7 @@ import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/componen
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Clock, ExternalLink, Calendar, Copy } from "lucide-react";
+import { UserAvatar } from "../UserAvatar";
 
 // Colors from prompt
 const CARD_COLORS = [
@@ -52,11 +53,17 @@ export function SessionCard({ session, isTeacher }: { session: any, isTeacher: b
         >
             <CardHeader className="pb-2">
                 <div className="flex justify-between items-start">
-                    <div className="flex items-center gap-2">
-                        {/* Avatar */}
+                    <div className="flex items-center gap-3">
+                        {!isTeacher && (
+                            <UserAvatar
+                                name={session.hostId?.name || "Instructor"}
+                                image={(session.hostId as any)?.profile}
+                                className="h-8 w-8"
+                            />
+                        )}
                         <div>
-                            <p className="text-xs font-medium text-gray-500 uppercase tracking-wider">Instructor</p>
-                            <p className="text-sm font-semibold">{session.hostId?.name || "You"}</p>
+                            <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest leading-none">Instructor</p>
+                            <p className="text-sm font-bold text-gray-800 leading-tight">{session.hostId?.name || "You"}</p>
                         </div>
                     </div>
                     {computedStatus === "LIVE" && <Badge variant="destructive" className="animate-pulse">LIVE</Badge>}

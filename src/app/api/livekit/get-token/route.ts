@@ -5,6 +5,7 @@ import { NextRequest, NextResponse } from "next/server";
 export async function GET(req: NextRequest) {
     const room = req.nextUrl.searchParams.get("room");
     const username = req.nextUrl.searchParams.get("username");
+    const role = req.nextUrl.searchParams.get("role");
 
     if (!room) {
         return NextResponse.json(
@@ -26,7 +27,7 @@ export async function GET(req: NextRequest) {
         const wsUrl = process.env.NEXT_PUBLIC_LIVEKIT_URL || process.env.LIVEKIT_URL;
 
         console.log("Debug: Generating LiveKit Token");
-        console.log("Debug: Room:", room, "Username:", username);
+        console.log("Debug: Room:", room, "Username:", username, "Role:", role);
         console.log("Debug: Keys present - API Key:", !!apiKey, "Secret:", !!apiSecret, "URL:", !!wsUrl);
 
         if (!apiKey || !apiSecret || !wsUrl) {
@@ -40,12 +41,8 @@ export async function GET(req: NextRequest) {
 
         const at = new AccessToken(apiKey, apiSecret, { identity: username });
 
-        // Determine Role Permissions
-        // Ideally, the frontend should verify auth status, but here we can check if username *looks* like a teacher 
-        // or rely on a "role" query param if we added it. 
-        // For now, let's assume "Teacher" in name => Teacher.
-        // A more robust way would be to fetch the user from DB here using a session cookie, but for now:
-        const isTeacher = username.toLowerCase().includes("teacher");
+        // Reliable Role Check
+        const isTeacher = role === "teacher";
 
         at.addGrant({
             roomJoin: true,

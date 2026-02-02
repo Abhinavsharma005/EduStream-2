@@ -13,7 +13,7 @@ export async function GET(req: Request, { params }: { params: { id: string } }) 
         // Safe to await it.
         const { id } = await params;
 
-        const session = await Session.findById(id).populate("hostId", "name");
+        const session = await Session.findById(id).populate("hostId", "name profile");
 
         if (!session) {
             return NextResponse.json({ error: "Session not found" }, { status: 404 });

@@ -7,6 +7,7 @@ const UserSchema = new mongoose.Schema(
         email: { type: String, required: true, unique: true },
         password: { type: String, required: true },
         role: { type: String, enum: ["student", "teacher"], required: true },
+        profile: { type: String, default: "" },
         joinedSessions: [{ type: mongoose.Schema.Types.ObjectId, ref: "Session" }],
     },
     { timestamps: true }

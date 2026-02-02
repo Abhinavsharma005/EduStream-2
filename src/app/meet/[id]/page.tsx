@@ -77,7 +77,9 @@ export default function MeetPage() {
     // LiveKit State
     const [token, setToken] = useState("");
     const [serverUrl, setServerUrl] = useState(process.env.NEXT_PUBLIC_LIVEKIT_URL || "");
-    const [user, setUser] = useState<{ id: string, name: string, role: string } | null>(null);
+
+    const [user, setUser] = useState<{ id: string, name: string, role: string, profile?: string } | null>(null);
+    const [teacherInfo, setTeacherInfo] = useState<{ name: string, profile?: string } | null>(null);
 
     useEffect(() => {
         // 1. Fetch User Identity
@@ -85,15 +87,23 @@ export default function MeetPage() {
             .then(res => res.json())
             .then(userData => {
                 if (userData.user) {
-                    setUser({ id: userData.user._id, name: userData.user.name, role: userData.user.role });
+                    setUser({ id: userData.user._id, name: userData.user.name, role: userData.user.role, profile: userData.user.profile });
 
                     // 2. Session check (optional but good)
                     fetch(`/api/sessions/${roomId}`)
                         .then(res => res.json())
                         .then(sessionData => {
                             if (sessionData.session) {
+                                // Set Teacher Info for Students
+                                if (sessionData.session.hostId) {
+                                    setTeacherInfo({
+                                        name: sessionData.session.hostId.name,
+                                        profile: sessionData.session.hostId.profile
+                                    });
+                                }
+
                                 // 3. Get LiveKit Token
-                                fetch(`/api/livekit/get-token?room=${roomId}&username=${userData.user.name}`)
+                                fetch(`/api/livekit/get-token?room=${roomId}&username=${userData.user.name}&role=${userData.user.role}`)
                                     .then(res => res.json())
                                     .then(data => {
                                         setToken(data.token);
@@ -212,7 +222,11 @@ export default function MeetPage() {
                 <div className="flex-1 flex flex-col relative">
                     {/* Main Video Area */}
                     <div className="flex-1 relative bg-gray-900 flex items-center justify-center p-4">
-                        <VideoLayout isTeacher={isTeacher} />
+                        <VideoLayout
+                            isTeacher={isTeacher}
+                            teacherProfile={isTeacher ? user?.profile : teacherInfo?.profile}
+                            teacherName={isTeacher ? user?.name || "Teacher" : teacherInfo?.name || "Teacher"}
+                        />
                         <RoomAudioRenderer />
 
                         {/* Connection Status Badge */}
@@ -324,7 +338,9 @@ export default function MeetPage() {
     );
 }
 
-function VideoLayout({ isTeacher }: { isTeacher: boolean }) {
+import { UserAvatar } from "@/components/UserAvatar";
+
+function VideoLayout({ isTeacher, teacherProfile, teacherName }: { isTeacher: boolean, teacherProfile?: string, teacherName: string }) {
     // UseTracks logic:
     // We request all camera and screen share tracks.
     // We do NOT filter by subscription because we want to see local tracks if we are the teacher.
@@ -359,10 +375,12 @@ function VideoLayout({ isTeacher }: { isTeacher: boolean }) {
                 </div>
             ) : (
                 <div className="flex flex-col items-center justify-center text-gray-500 gap-4">
-                    <div className="h-24 w-24 rounded-full bg-gray-800 flex items-center justify-center animate-pulse">
-                        <Video className="h-8 w-8 opacity-50" />
+                    <div className="h-32 w-32 rounded-full border-4 border-gray-800 p-1">
+                        <UserAvatar name={teacherName} image={teacherProfile} className="h-full w-full rounded-full text-4xl" />
                     </div>
-                    <p>Waiting for teacher's stream...</p>
+                    <p className="text-gray-600 font-medium">
+                        {isTeacher ? "Your camera is off" : "Instructor's camera is off"}
+                    </p>
                 </div>
             )}
         </div>

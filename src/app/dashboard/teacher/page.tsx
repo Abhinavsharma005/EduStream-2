@@ -4,6 +4,7 @@
 import { useState, useEffect } from "react";
 import CreateSessionForm from "@/components/dashboard/CreateSessionForm";
 import { SessionCard } from "@/components/dashboard/SessionCard";
+import { ProfileMenu } from "@/components/ProfileMenu";
 
 interface Session {
     _id: string;
@@ -17,7 +18,7 @@ interface Session {
 
 export default function TeacherDashboard() {
     const [sessions, setSessions] = useState<Session[]>([]);
-    const [userName, setUserName] = useState("Teacher");
+    const [currentUser, setCurrentUser] = useState<any>(null);
 
     const fetchSessions = async () => {
         const res = await fetch("/api/sessions?filter=all");
@@ -32,14 +33,18 @@ export default function TeacherDashboard() {
         fetch("/api/auth/me")
             .then(res => res.json())
             .then(data => {
-                if (data.user) setUserName(data.user.name);
+                if (data.user) setCurrentUser(data.user);
             });
     }, []);
 
     return (
         <div className="space-y-8">
-            <div>
-                <h2 className="text-2xl font-bold text-gray-900">Welcome, {userName}</h2>
+            <div className="flex justify-between items-center bg-white p-4 rounded-xl shadow-sm border">
+                <div>
+                    <h2 className="text-2xl font-bold text-gray-900">Welcome, {currentUser?.name || "Teacher"}</h2>
+                    <p className="text-gray-500 text-sm">Manage your sessions and students</p>
+                </div>
+                {currentUser && <ProfileMenu user={currentUser} onUpdate={setCurrentUser} />}
             </div>
 
             <CreateSessionForm onSessionCreated={fetchSessions} />

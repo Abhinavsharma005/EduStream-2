@@ -81,7 +81,7 @@ export async function GET(req: Request) {
             sessions = await Session.find({ hostId: userId }).sort({ startTime: -1 });
         } else {
             // Only show sessions where the student is a participant
-            sessions = await Session.find({ participants: userId }).populate("hostId", "name").sort({ startTime: -1 });
+            sessions = await Session.find({ participants: userId }).populate("hostId", "name profile").sort({ startTime: -1 });
         }
 
         return NextResponse.json({ sessions }, { status: 200 });

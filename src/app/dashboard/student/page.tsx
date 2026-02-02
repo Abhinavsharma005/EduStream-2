@@ -3,6 +3,7 @@
 
 import { useState, useEffect } from "react";
 import { SessionCard } from "@/components/dashboard/SessionCard";
+import { ProfileMenu } from "@/components/ProfileMenu";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 
@@ -19,14 +20,14 @@ interface Session {
 export default function StudentDashboard() {
     const [sessions, setSessions] = useState<Session[]>([]);
     const [link, setLink] = useState("");
-    const [userName, setUserName] = useState("Student");
+    const [currentUser, setCurrentUser] = useState<any>(null);
 
     useEffect(() => {
         // Fetch User
         fetch("/api/auth/me")
             .then(res => res.json())
             .then(data => {
-                if (data.user) setUserName(data.user.name);
+                if (data.user) setCurrentUser(data.user);
             });
 
         // Fetch Sessions
@@ -87,8 +88,12 @@ export default function StudentDashboard() {
 
     return (
         <div className="space-y-8">
-            <div>
-                <h2 className="text-2xl font-bold text-gray-900">Welcome, {userName}</h2>
+            <div className="flex justify-between items-center bg-white p-4 rounded-xl shadow-sm border">
+                <div>
+                    <h2 className="text-2xl font-bold text-gray-900">Welcome, {currentUser?.name || "Student"}</h2>
+                    <p className="text-gray-500 text-sm">Welcome back, get ready to learn!</p>
+                </div>
+                {currentUser && <ProfileMenu user={currentUser} onUpdate={setCurrentUser} />}
             </div>
 
             <div className="bg-white p-6 rounded-lg shadow-sm border">
