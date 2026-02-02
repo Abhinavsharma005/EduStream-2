@@ -1,6 +1,6 @@
-# EduStream-2 🎓
+# EduStream 🎓
 
-EduStream-2 is a comprehensive, interactive live streaming educational platform designed to bridge the gap between virtual learning and real-time engagement. It empowers educators to conduct immersive live sessions with integrated video, chat, quizzes, and polls, while providing students with a seamless and engaging learning environment.
+EduStream is a comprehensive, interactive live streaming educational platform designed to bridge the gap between virtual learning and real-time engagement. It empowers educators to conduct immersive live sessions with integrated video, chat, quizzes, and polls, while providing students with a seamless and engaging learning environment.
 
 ## ✨ Core Features
 
@@ -58,7 +58,7 @@ EduStream-2 is a comprehensive, interactive live streaming educational platform 
 ## 📂 Folder Structure
 
 ```
-edustream-2/
+edustream/
 ├── src/
 │   ├── app/                # Next.js App Router pages & layouts
 │   │   ├── api/            # Backend API routes (Auth, Sessions, LiveKit)
@@ -101,3 +101,9 @@ This project is licensed under the MIT License.
 
 -   **GitHub:** [Abhinavsharma005](https://github.com/Abhinavsharma005)
 -   **Email:** [sharmaabhinav1013@gmail.com](mailto:sharmaabhinav1013@gmail.com)
+
+## ⭐ Show your support
+
+Give a ⭐️ if this project helped you!
+
+---
