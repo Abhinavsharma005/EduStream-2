@@ -1,36 +1,103 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# EduStream-2 🎓
 
-## Getting Started
+EduStream-2 is a comprehensive, interactive live streaming educational platform designed to bridge the gap between virtual learning and real-time engagement. It empowers educators to conduct immersive live sessions with integrated video, chat, quizzes, and polls, while providing students with a seamless and engaging learning environment.
 
-First, run the development server:
+## ✨ Core Features
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+-   **Interactive Live Sessions:** High-quality video streaming with low latency using WebRTC.
+-   **Real-time Communication:** Built-in chat for instant Q&A and class discussions using Socket.IO.
+-   **Engagement Tools:**
+    -   **Live Quizzes:** Test student knowledge instantly during sessions.
+    -   **Real-time Polls:** Gather feedback and opinions on the fly.
+-   **Role-Based Access:** Distinct interfaces and permissions for **Teachers** (hosts) and **Students** (participants).
+-   **Screen Sharing:** seamless screen sharing capabilities for demonstrators.
+-   **Modern UI/UX:**
+    -   Responsive design with a "wow" factor.
+    -   **Dark/Light Mode** support with neon-tinted dark themes.
+    -   Smooth animations using Framer Motion.
+-   **Profile Management:** User avatars, profile personalization, and secure authentication.
+
+## 🛠️ Tech Stack
+
+### Frontend
+-   **Framework:** [Next.js 14+](https://nextjs.org/) (App Router)
+-   **Library:** [React](https://react.dev/)
+-   **Styling:** [Tailwind CSS](https://tailwindcss.com/)
+-   **Components:** [shadcn/ui](https://ui.shadcn.com/) (Radix UI)
+-   **Icons:** [Lucide React](https://lucide.dev/)
+-   **Animations:** [Framer Motion](https://www.framer.com/motion/)
+
+### Backend
+-   **API:** Next.js API Routes (Serverless)
+-   **Real-time Engine:** [Socket.IO](https://socket.io/) (Custom Server)
+-   **Streaming:** [LiveKit](https://livekit.io/) (WebRTC SDK)
+-   **Authentication:** JWT (JSON Web Tokens) & bcryptjs
+
+### Database & Storage
+-   **Database:** [MongoDB](https://www.mongodb.com/) (via Mongoose)
+-   **Caching/PubSub:** [Redis](https://redis.io/) (ioredis)
+-   **Image Storage:** [Cloudinary](https://cloudinary.com/)
+
+## 🔄 Project Flow
+
+### 1. Authentication Flow
+-   **Sign Up/Login:** Users register as either a "Teacher" or "Student".
+-   **Secure Access:** JWT tokens are issued upon login to secure protected routes and API endpoints.
+
+### 2. Teacher Flow
+-   **Dashboard:** Teachers access a dedicated dashboard to manage sessions.
+-   **Create Session:** Teachers schedule or start generic/topic-specific live sessions.
+-   **Go Live:** The teacher enters the "Meet" room, enabling camera/microphone and screen sharing.
+-   **Manage Class:** Teachers can launch polls, broadcast messages, and moderate the session.
+
+### 3. Student Flow
+-   **Dashboard:** Students view specialized cards for Live, Upcoming, and Recent sessions.
+-   **Join Session:** Students join via a link or a session ID from their dashboard.
+-   **Interact:** Students participate by watching the stream, chatting, and responding to quizzes/polls in real-time.
+
+## 📂 Folder Structure
+
+```
+edustream-2/
+├── src/
+│   ├── app/                # Next.js App Router pages & layouts
+│   │   ├── api/            # Backend API routes (Auth, Sessions, LiveKit)
+│   │   ├── dashboard/      # Teacher & Student Dashboard pages
+│   │   ├── meet/           # Live Meeting Interface
+│   │   ├── authpage/       # Login/Signup Page
+│   │   ├── globals.css     # Global styles & Tailwind directives
+│   │   ├── layout.tsx      # Root layout
+│   │   └── page.tsx        # Landing Page
+│   ├── components/         # Reusable UI components
+│   │   ├── dashboard/      # Dashboard-specific components (SessionCard, etc.)
+│   │   ├── ui/             # shadcn/ui primitives (Button, Card, Input, etc.)
+│   │   ├── DashboardFooter.tsx
+│   │   ├── ProfileMenu.tsx
+│   │   ├── ThemeToggle.tsx
+│   │   └── ...
+│   ├── lib/                # Utilities, DB connection, & helper functions
+│   ├── models/             # Mongoose Database Models (User, Session)
+│   └── types/              # TypeScript definitions
+├── public/                 # Static assets (images, icons)
+├── SERVER.ts               # Custom Server entry point (Socket.IO + Next.js)
+├── tailwind.config.ts      # Tailwind configuration
+└── package.json            # Dependencies & Scripts
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## 🙌 Acknowledgments
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+-   **Next.js Team:** For the amazing React framework.
+-   **Vercel:** For hosting solutions and infrastructure.
+-   **LiveKit:** For the robust WebRTC infrastructure.
+-   **Shadcn:** For the beautiful and accessible UI components.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## 📄 License
 
-## Learn More
+This project is licensed under the MIT License.
 
-To learn more about Next.js, take a look at the following resources:
+## 👨‍💻 Author
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+**Abhinav Sharma**
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+-   **GitHub:** [Abhinavsharma005](https://github.com/Abhinavsharma005)
+-   **Email:** [sharmaabhinav1013@gmail.com](mailto:sharmaabhinav1013@gmail.com)
