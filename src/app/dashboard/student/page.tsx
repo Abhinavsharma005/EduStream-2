@@ -93,7 +93,6 @@ export default function StudentDashboard() {
                     <h2 className="text-2xl font-bold text-gray-900">Welcome, {currentUser?.name || "Student"}</h2>
                     <p className="text-gray-500 text-sm">Welcome back, get ready to learn!</p>
                 </div>
-                {currentUser && <ProfileMenu user={currentUser} onUpdate={setCurrentUser} />}
             </div>
 
             <div className="bg-white p-6 rounded-lg shadow-sm border">

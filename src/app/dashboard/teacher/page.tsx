@@ -44,7 +44,6 @@ export default function TeacherDashboard() {
                     <h2 className="text-2xl font-bold text-gray-900">Welcome, {currentUser?.name || "Teacher"}</h2>
                     <p className="text-gray-500 text-sm">Manage your sessions and students</p>
                 </div>
-                {currentUser && <ProfileMenu user={currentUser} onUpdate={setCurrentUser} />}
             </div>
 
             <CreateSessionForm onSessionCreated={fetchSessions} />
