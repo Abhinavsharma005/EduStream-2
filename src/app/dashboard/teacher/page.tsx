@@ -39,9 +39,20 @@ export default function TeacherDashboard() {
 
     return (
         <div className="space-y-8">
-            <div className="flex justify-between items-center bg-white dark:bg-[#101828] p-4 rounded-xl shadow-sm border dark:border-gray-800 transition-colors">
+            <div className="flex justify-between items-center bg-gradient-to-r 
+from-blue-50/90 
+via-indigo-50/70 
+to-violet-50/80 
+dark:from-[#0f172a] 
+dark:via-[#1e1b4b] 
+dark:to-[#312e81]
+ p-4 rounded-xl shadow-sm border dark:border-gray-800 transition-all">
                 <div>
-                    <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Welcome, {currentUser?.name || "Teacher"}</h2>
+                    <h2 className="text-2xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
+                        
+                        <span>Welcome, {currentUser?.name || "Teacher"}</span>
+                        <span className="text-3xl">🧑‍🏫</span>
+                    </h2>
                     <p className="text-gray-500 dark:text-gray-400 text-sm">Manage your sessions and students</p>
                 </div>
             </div>
