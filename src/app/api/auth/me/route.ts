@@ -5,6 +5,9 @@ import { cookies } from "next/headers";
 import { connectDB } from "@/lib/db";
 import User from "@/models/User";
 
+export const dynamic = "force-dynamic";
+
+
 const JWT_SECRET = new TextEncoder().encode(process.env.JWT_SECRET!);
 
 export async function GET(req: Request) {
