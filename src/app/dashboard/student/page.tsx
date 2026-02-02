@@ -95,7 +95,7 @@ export default function StudentDashboard() {
                 </div>
             </div>
 
-            <div className="bg-white p-6 rounded-lg shadow-sm border">
+            <div className="bg-white dark:bg-[#101828] p-6 rounded-lg shadow-sm border dark:border-gray-800 transition-colors">
                 <div className="flex gap-4">
                     <Input
                         placeholder="Enter your session link or ID"

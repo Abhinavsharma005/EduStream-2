@@ -18,13 +18,12 @@ const CARD_COLORS = [
 ];
 
 const DARK_CARD_COLORS = [
-    "#1e293b", // Slate 800 (Backup) - wait, let's map roughly
-    "#187582ff", // Blue 950
-    "#052e16", // Green 950
-    "#431407", // Orange 950
-    "#3b0764", // Purple 950
-    "#500724", // Pink 950
-    "#422006", // Yellow 950 (Brownish)
+    "#1e3a5f", // Blueish (dark neon blue)
+    "#1f4f3a", // Greenish (dark neon green)
+    "#5a3b1e", // Orangeish (dark neon orange)
+    "#3f2a5f", // Purplish (dark neon purple)
+    "#5a244aff", // Pinkish (dark neon pink)
+    "#5a5420", // Yellowish (dark neon yellow)
 ];
 
 export function SessionCard({ session, isTeacher }: { session: any, isTeacher: boolean }) {
