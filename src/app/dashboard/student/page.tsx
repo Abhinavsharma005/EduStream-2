@@ -77,8 +77,8 @@ export default function StudentDashboard() {
         const data = await res.json();
         if (data.sessions) setSessions(data.sessions);
 
-        // 3. Open in new tab
-        window.open(`/meet/${id}`, "_blank");
+        // Clear input
+        setLink("");
       }
     } catch (e) {
       console.error("Failed to join", e);
@@ -111,7 +111,7 @@ export default function StudentDashboard() {
             onClick={revealSession}
             className="bg-blue-600 hover:bg-blue-700"
           >
-            Reveal & Join
+            Reveal
           </Button>
         </div>
       </div>
