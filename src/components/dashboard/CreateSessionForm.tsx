@@ -35,10 +35,7 @@ export default function CreateSessionForm({ onSessionCreated }: { onSessionCreat
     const onSubmit = async (data: FormData) => {
         setLoading(true);
         try {
-            // Fix: Convert local datetime-local input to UTC ISO string
-            // The input value is like "2023-10-25T14:30" (Local Time)
-            // new Date("...") in browser creates a Date object using System Timezone
-            // .toISOString() converts that specific instant to UTC
+           
             const localDate = new Date(data.date);
             const isoDate = localDate.toISOString();
 
