@@ -15,7 +15,7 @@ function AuthContent() {
             <div className="w-full max-w-md space-y-8">
                 <div className="text-center">
                     <h2 className="mt-6 text-3xl font-bold tracking-tight text-gray-900">
-                        <span>Edu<span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-cyan-500">Stream</span></span>
+                        <span>Edu<span className="text-transparent bg-clip-text bg-linear-to-r from-blue-600 to-cyan-500">Stream</span></span>
                     </h2>
                     <p className="mt-2 text-sm text-gray-600">
                         Role-based Live Teaching Platform

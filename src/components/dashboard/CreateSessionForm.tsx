@@ -10,12 +10,12 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea"; // Need to ensure Textarea exists, or use Input
+import { Textarea } from "@/components/ui/textarea"; 
 
 const schema = z.object({
     topic: z.string().min(3),
     description: z.string().optional(),
-    date: z.string(), // ISO datetime string from input
+    date: z.string(), 
     hours: z.string().regex(/^\d+$/),
     minutes: z.string().regex(/^\d+$/),
 });

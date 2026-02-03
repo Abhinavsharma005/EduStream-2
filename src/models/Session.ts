@@ -7,7 +7,7 @@ const SessionSchema = new mongoose.Schema(
         topic: { type: String, required: true },
         description: { type: String },
         startTime: { type: Date, required: true },
-        duration: { type: Number, required: true }, // in minutes
+        duration: { type: Number, required: true }, 
         status: {
             type: String,
             enum: ["SCHEDULED", "LIVE", "ENDED"],

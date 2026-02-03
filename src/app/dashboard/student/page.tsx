@@ -87,7 +87,7 @@ export default function StudentDashboard() {
 
   return (
     <div className="space-y-8">
-      <div className="flex justify-between items-center bg-gradient-to-r from-emerald-50/80 to-teal-50/80 dark:from-[#101828] dark:to-[#0f2e2e] p-4 rounded-xl shadow-sm border dark:border-gray-800 transition-all">
+      <div className="flex justify-between items-center bg-linear-to-r from-emerald-50/80 to-teal-50/80 dark:from-[#101828] dark:to-[#0f2e2e] p-4 rounded-xl shadow-sm border dark:border-gray-800 transition-all">
         <div>
           <h2 className="text-2xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
             <span>Welcome, {currentUser?.name || "Student"}</span>

@@ -85,7 +85,7 @@ export default function LoginForm() {
                         )}
                     </div>
 
-                    <Button className="w-full" disabled={isSubmitting}>
+                    <Button className="w-full bg-blue-600 hover:bg-blue-700 text-white" disabled={isSubmitting}>
                         Login
                     </Button>
                 </form>

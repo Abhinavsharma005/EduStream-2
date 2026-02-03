@@ -120,12 +120,6 @@ export function QuizView({ quizzes, isTeacher, onCreateQuiz, onAnswer }: QuizVie
                                     const count = quiz.answers && quiz.answers[idx] ? quiz.answers[idx] : 0;
                                     const percent = totalAnswers > 0 ? Math.round((count / totalAnswers) * 100) : 0;
 
-                                    // Styling Logic
-                                    // If Teacher: Show correct answer highlight + percentages
-                                    // If Student: Show selection state. After answer, show correct/incorrect? 
-                                    // Requirement: "real-time result percentages should be displayed... in both quizzes and polls"
-                                    // So students see percentages too after answering? Usually quizzes hide until end, but req says display.
-
                                     const isCorrect = idx === quiz.correctOptionIndex;
 
                                     return (

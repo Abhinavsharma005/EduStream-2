@@ -35,7 +35,7 @@ export default function Page() {
               onClick={() => router.push("/")}
             >
               <GraduationCap className="h-7 w-7 text-blue-600" />
-              <span>Edu<span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-cyan-500">Stream</span></span>
+              <span>Edu<span className="text-transparent bg-clip-text bg-linear-to-r from-blue-600 to-cyan-500">Stream</span></span>
             </h1>
 
             {/* Navigation Links */}
@@ -57,7 +57,7 @@ export default function Page() {
 
       {/* Hero Section */}
       <motion.section
-        className="pt-32 pb-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-blue-50 to-indigo-50"
+        className="pt-32 pb-20 px-4 sm:px-6 lg:px-8 bg-linear-to-br from-blue-50 to-indigo-50"
         initial="hidden"
         animate="visible"
         variants={staggerContainer}
@@ -67,18 +67,18 @@ export default function Page() {
             <motion.div variants={fadeInUp}>
               <h2 className="text-5xl md:text-6xl font-bold text-gray-900 leading-tight mb-6">
                 Interactive Live{" "}
-                <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-cyan-500">
+                <span className="text-transparent bg-clip-text bg-linear-to-r from-blue-600 to-cyan-500">
                   Teaching
                 </span>{" "}
                 with{" "}
-                <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-cyan-500">
+                <span className="text-transparent bg-clip-text bg-linear-to-r from-blue-600 to-cyan-500">
                   chat
                 </span>,{" "}
-                <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-cyan-500">
+                <span className="text-transparent bg-clip-text bg-linear-to-r from-blue-600 to-cyan-500">
                   quizzes
                 </span>{" "}
                 &{" "}
-                <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-cyan-500">
+                <span className="text-transparent bg-clip-text bg-linear-to-r from-blue-600 to-cyan-500">
                   polls
                 </span>
               </h2>
@@ -105,16 +105,14 @@ export default function Page() {
             </motion.div>
             <motion.div
               variants={fadeInUp}
-              className="relative h-[400px] bg-gray-200 rounded-lg overflow-hidden shadow-2xl"
+              className="relative h-100 bg-gray-200 rounded-lg overflow-hidden shadow-2xl"
             >
-              {/* Image placeholder - add your image here */}
               <img src="first_image.png" alt="showcase image" className="w-full h-full object-cover rounded-lg hover:scale-105 transition-transform duration-500" />
             </motion.div>
           </div>
         </div>
       </motion.section>
 
-      {/* About Section - Features */}
       {/* About Section - Features */}
       <motion.section
         id="about"
@@ -197,7 +195,7 @@ export default function Page() {
         <div className="max-w-7xl mx-auto">
           <div className="grid md:grid-cols-2 gap-12 items-center">
             <motion.div className="order-2 md:order-1" variants={fadeInUp}>
-              <div className="relative h-[400px] bg-gray-200 rounded-lg overflow-hidden shadow-xl">
+              <div className="relative h-100 bg-gray-200 rounded-lg overflow-hidden shadow-xl">
                 <img src="/teacher_image.jpg" alt="Teacher Section" className="w-full h-full object-cover rounded-lg hover:scale-105 transition-transform duration-500" />
               </div>
             </motion.div>
@@ -214,7 +212,7 @@ export default function Page() {
                   "You can freely set the timing and duration for the sessions"
                 ].map((item, idx) => (
                   <motion.div key={idx} className="flex items-start gap-3" variants={fadeInUp}>
-                    <div className="w-6 h-6 bg-orange-500 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
+                    <div className="w-6 h-6 bg-orange-500 rounded-full flex items-center justify-center shrink-0 mt-1">
                       <Check className="h-4 w-4 text-white" />
                     </div>
                     <p className="text-gray-700">{item}</p>
@@ -258,7 +256,7 @@ export default function Page() {
                   "Experience immersive learning with live video, chat, quizzes, and interactive polls"
                 ].map((item, idx) => (
                   <motion.div key={idx} className="flex items-start gap-3" variants={fadeInUp}>
-                    <div className="w-6 h-6 bg-cyan-500 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
+                    <div className="w-6 h-6 bg-cyan-500 rounded-full flex items-center justify-center shrink-0 mt-1">
                       <Check className="h-4 w-4 text-white" />
                     </div>
                     <p className="text-gray-700">{item}</p>
@@ -273,7 +271,7 @@ export default function Page() {
                 Join as Student
               </Button>
             </motion.div>
-            <motion.div className="relative h-[400px] bg-gray-200 rounded-lg overflow-hidden shadow-xl" variants={fadeInUp}>
+            <motion.div className="relative h-100 bg-gray-200 rounded-lg overflow-hidden shadow-xl" variants={fadeInUp}>
               <img src="/student_image.jpg" alt="Student Section" className="w-full h-full object-cover rounded-lg hover:scale-105 transition-transform duration-500" />
             </motion.div>
           </div>
@@ -281,7 +279,7 @@ export default function Page() {
       </motion.section>
 
       {/* CTA Section */}
-      <section className="py-24 px-4 sm:px-6 lg:px-8 bg-gradient-to-r from-blue-600 to-cyan-500">
+      <section className="py-24 px-4 sm:px-6 lg:px-8 bg-linear-to-r from-blue-600 to-cyan-500">
         <div className="max-w-4xl mx-auto text-center">
           <h3 className="text-4xl md:text-5xl font-bold text-white mb-6">
             Ready to transform your learning more interactive?
@@ -299,7 +297,6 @@ export default function Page() {
       </section>
 
       {/* Footer */}
-      {/* Footer */}
       <footer id="contact" className="bg-gray-50 py-16 px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto">
           <div className="grid md:grid-cols-3 gap-12">
@@ -307,7 +304,7 @@ export default function Page() {
             <div>
               <h1 className="text-2xl font-bold text-gray-900 mb-4 flex items-center gap-2">
                 <GraduationCap className="h-7 w-7 text-blue-600" />
-                <span>Edu<span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-cyan-500">Stream</span></span>
+                <span>Edu<span className="text-transparent bg-clip-text bg-linear-to-r from-blue-600 to-cyan-500">Stream</span></span>
               </h1>
               <p className="text-gray-600 mb-6">
                 A powerful platform for creating, sharing, and participating in live educational sessions. Designed for both teachers and students to enhance the learning experience.

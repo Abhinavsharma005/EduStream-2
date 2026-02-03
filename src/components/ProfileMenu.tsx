@@ -144,7 +144,7 @@ export function ProfileMenu({ user, onUpdate }: ProfileMenuProps) {
                         <UserAvatar name={user.name} image={user.profile} className="h-10 w-10 ring-2 ring-offset-2 ring-transparent group-hover:ring-gray-200 transition-all" />
                         <div className="hidden md:block text-left">
                             <p className="text-sm font-medium text-gray-700 dark:text-gray-200 group-hover:text-gray-900 dark:group-hover:text-white">{user.name}</p>
-                            <p className="text-xs text-gray-500 dark:text-gray-400 truncate max-w-[120px]">{user.email}</p>
+                            <p className="text-xs text-gray-500 dark:text-gray-400 truncate max-w-30">{user.email}</p>
                         </div>
                     </div>
                 </DropdownMenuTrigger>

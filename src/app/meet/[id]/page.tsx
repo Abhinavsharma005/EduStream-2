@@ -48,27 +48,6 @@ export default function MeetPage() {
     // Unread counts (red dots)
     const [unread, setUnread] = useState({ chat: 0, poll: 0, quiz: 0 });
 
-    // ... inside connectSocket ... 
-    // Need to insert listeners.
-
-    // ... inside render ... 
-    // Sidebar structure replacement.
-
-    // Let's do it in chunks.
-
-    // Chunk 1: State injection
-    // Chunk 2: Listener injection
-    // Chunk 3: Render replacement
-
-    // I will return to task loop to do this via multi_replace or sequential, 
-    // but the Prompt here is strictly asking for ReplaceFileContent.
-    // I will assume I can do large replace.
-
-    // Actually, I can use `multi_replace_file_content` again which is safer.
-    // I will cancel this call and use `multi_replace_file_content` in next step.
-
-    // WAIT, I must return SOMETHING or error. 
-    // I will just return the State Injection here to start.
     const [socket, setSocket] = useState<Socket | null>(null);
     const [messages, setMessages] = useState<Message[]>([]);
     const [inputMsg, setInputMsg] = useState("");
@@ -89,7 +68,7 @@ export default function MeetPage() {
                 if (userData.user) {
                     setUser({ id: userData.user._id, name: userData.user.name, role: userData.user.role, profile: userData.user.profile });
 
-                    // 2. Session check (optional but good)
+                    // 2. Session check 
                     fetch(`/api/sessions/${roomId}`)
                         .then(res => res.json())
                         .then(sessionData => {
@@ -159,7 +138,7 @@ export default function MeetPage() {
 
         newSocket.on("update-quiz-results", (data: { quizId: string, answers: any }) => {
             setQuizzes(prev => prev.map(q => q.id === data.quizId ? { ...q, answers: data.answers } : q));
-            // Optional: if teacher, maybe show dot? 
+            
         });
 
         newSocket.on("new-message", (data: any) => {
@@ -186,7 +165,6 @@ export default function MeetPage() {
 
     const endSession = async () => {
         if (confirm("Are you sure you want to end this session for everyone? Passcode: END")) {
-            // Verify intent (simple confirm is OK for now)
             try {
                 await fetch(`/api/sessions/${roomId}/end`, { method: "POST" });
                 // Disconnect socket/livekit if needed, but router push is usually enough
@@ -341,19 +319,12 @@ export default function MeetPage() {
 import { UserAvatar } from "@/components/UserAvatar";
 
 function VideoLayout({ isTeacher, teacherProfile, teacherName }: { isTeacher: boolean, teacherProfile?: string, teacherName: string }) {
-    // UseTracks logic:
-    // We request all camera and screen share tracks.
-    // We do NOT filter by subscription because we want to see local tracks if we are the teacher.
+   
     const tracks = useTracks(
         [Track.Source.Camera, Track.Source.ScreenShare],
         { onlySubscribed: false }
     );
 
-    // LOGIC FIX:
-    // We want to show the "active" presentation or speaker.
-    // Prioritize Screen Share. Then Camera.
-    // Since we enforced permissions on the backend, only the teacher has tracks.
-    // So any track we find is valid to show.
 
     const videoTrack = tracks.find(t => t.source === Track.Source.ScreenShare) ||
         tracks.find(t => t.source === Track.Source.Camera);
@@ -402,7 +373,6 @@ function ConnectionStatusIndicator() {
 function CustomControlBar({ isTeacher, onLeave, onEndSession }: { isTeacher: boolean, onLeave: () => void, onEndSession?: () => void }) {
     const { localParticipant } = useLocalParticipant();
 
-    // We maintain local state for UI responsiveness, but ultimately control via localParticipant
     const [micOn, setMicOn] = useState(false);
     const [camOn, setCamOn] = useState(false);
     const [screenOn, setScreenOn] = useState(false);
@@ -415,8 +385,6 @@ function CustomControlBar({ isTeacher, onLeave, onEndSession }: { isTeacher: boo
         setCamOn(localParticipant.isCameraEnabled);
         setScreenOn(localParticipant.isScreenShareEnabled);
 
-        // Listen for track changes (optional, but good for robust sync)
-        // Note: For production use, useTrackMuted events are better, but basic state sync on render/action is okay for now.
     }, [localParticipant]);
 
     const toggleMic = async () => {

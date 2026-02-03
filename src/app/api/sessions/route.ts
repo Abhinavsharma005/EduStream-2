@@ -2,8 +2,7 @@
 import { NextResponse } from "next/server";
 import { connectDB } from "@/lib/db";
 import Session from "@/models/Session";
-import { jwtVerify } from "jose"; // Use jose for edge compatibility if needed, but here node runtime is fine.
-// actually this is a nodejs route, so we can use jsonwebtoken if we want, but sticking to jose for consistency
+import { jwtVerify } from "jose"; 
 import { cookies } from "next/headers";
 
 const JWT_SECRET = new TextEncoder().encode(process.env.JWT_SECRET!);
@@ -28,13 +27,8 @@ export async function POST(req: Request) {
         await connectDB();
 
         // Calculate start time and duration
-        const startTime = new Date(date); // Ensure this is parsed correctly from frontend
-        // Set time to the date? Frontend sends full date object or string?
-        // User prompt: "start time(for example: 8:00 PM, Jan 28, 2026)"
-        // Let's assume frontend sends a valid ISO string or we construct it.
-        // Actually the prompt implies separate fields maybe? "start time... and duration"
-
-        // Let's assume input 'date' is the full Date object/ISO string.
+        const startTime = new Date(date); 
+        
 
         const duration = (parseInt(hours || "0") * 60) + parseInt(minutes || "0");
 

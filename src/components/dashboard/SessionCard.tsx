@@ -6,8 +6,6 @@ import { Button } from "@/components/ui/button";
 import { Clock, ExternalLink, Calendar, Copy } from "lucide-react";
 import { UserAvatar } from "../UserAvatar";
 
-// Colors from prompt
-// Colors from prompt
 const CARD_COLORS = [
     "#e5f1ff", // Blueish
     "#d9fced", // Greenish
@@ -41,16 +39,12 @@ export function SessionCard({ session, isTeacher }: { session: any, isTeacher: b
     const darkColor = colors.dark;
     const status = session.status === "LIVE" ? "Live" : session.status === "SCHEDULED" ? "Scheduled" : "Ended";
 
-    // Dynamic status check based on time if needed, but using stored status for now.
-    // Actually, we should probably compute "Live" if within time window even if status says scheduled?
-    // Let's trust the prop for now, or computing it here:
     const now = new Date();
     const start = new Date(session.startTime);
     const end = new Date(start.getTime() + session.duration * 60000);
 
     let computedStatus = "SCHEDULED";
-    // Priority: If time is passed, it is ENDED for students view regardless of DB status (unless manually kept live? No, user strict about duration)
-    // Actually, for teacher, they might extend it. But user request specifically asked for auto transition.
+   
 
     if (now >= end) {
         computedStatus = "ENDED";
@@ -60,7 +54,6 @@ export function SessionCard({ session, isTeacher }: { session: any, isTeacher: b
         computedStatus = "SCHEDULED";
     }
 
-    // Fallback/Override if DB says explicitly defined
     if (session.status === "ENDED") computedStatus = "ENDED";
 
     const isDark = theme === "dark";

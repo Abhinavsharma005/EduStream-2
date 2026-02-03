@@ -39,7 +39,7 @@ export default function TeacherDashboard() {
 
     return (
         <div className="space-y-8">
-            <div className="flex justify-between items-center bg-gradient-to-r 
+            <div className="flex justify-between items-center bg-linear-to-r 
 from-blue-50/90 
 via-indigo-50/70 
 to-violet-50/80 
