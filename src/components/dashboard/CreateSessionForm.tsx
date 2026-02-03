@@ -10,12 +10,12 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea"; 
+import { Textarea } from "@/components/ui/textarea";
 
 const schema = z.object({
     topic: z.string().min(3),
     description: z.string().optional(),
-    date: z.string(), 
+    date: z.string(),
     hours: z.string().regex(/^\d+$/),
     minutes: z.string().regex(/^\d+$/),
 });
@@ -35,10 +35,20 @@ export default function CreateSessionForm({ onSessionCreated }: { onSessionCreat
     const onSubmit = async (data: FormData) => {
         setLoading(true);
         try {
+            // Fix: Convert local datetime-local input to UTC ISO string
+            // The input value is like "2023-10-25T14:30" (Local Time)
+            // new Date("...") in browser creates a Date object using System Timezone
+            // .toISOString() converts that specific instant to UTC
+            const localDate = new Date(data.date);
+            const isoDate = localDate.toISOString();
+
             const res = await fetch("/api/sessions", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(data),
+                body: JSON.stringify({
+                    ...data,
+                    date: isoDate // Send UTC
+                }),
             });
 
             if (res.ok) {
