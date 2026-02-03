@@ -1,6 +1,6 @@
 # EduStream 🎓
 
-EduStream is a comprehensive, interactive live streaming educational platform designed to bridge the gap between virtual learning and real-time engagement. It empowers educators to conduct immersive live sessions with integrated video, chat, quizzes, and polls, while providing students with a seamless and engaging learning environment.
+EduStream inspired by live streaming platforms like Twitch and YouTube Live, but built specifically for education-focused content. EduStream is a role-based live teaching platform that allows teachers to broadcast live classes while students join as viewers, interact through real-time chat, and actively participate in quizzes and polls
 
 ## ✨ Core Features
 
