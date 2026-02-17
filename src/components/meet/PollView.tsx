@@ -56,7 +56,7 @@ export function PollView({ polls, isTeacher, onCreatePoll, onVote }: PollViewPro
     return (
         <div className="h-full flex flex-col p-4 space-y-4 overflow-y-auto">
             {isTeacher && !isCreating && (
-                <Button onClick={() => setIsCreating(true)} className="w-full bg-blue-600 hover:bg-blue-500">
+                <Button onClick={() => setIsCreating(true)} className="w-full bg-green-600 hover:bg-green-500">
                     <Plus className="mr-2 h-4 w-4" /> Create New Poll
                 </Button>
             )}
