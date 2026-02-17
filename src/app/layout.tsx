@@ -19,8 +19,6 @@ export const metadata: Metadata = {
 
 import { ThemeProvider } from "@/components/ThemeProvider";
 
-// ...
-
 export default function RootLayout({
   children,
 }: Readonly<{
